@@ -19,9 +19,9 @@ $(function () {
   let isDark = true;         // theme state (sync with HTML data-theme attribute)
 
   /* Mock AI responses
-     Tested: Should feel natural but not too polished.
-     Range: technical + career advice (tailored to Evion's internship context).
-     TODO: Replace with actual API call to Claude/ChatGPT API.
+      Tested: Should feel natural but not too polished.
+      Range: technical + career advice (tailored to Evion's internship context).
+      TODO: Replace with actual API call to Claude/ChatGPT API.
   */
   const aiResponses = [
     "That's a solid question. Let me break it down:\n\n**Key points:**\n- First, understand the core concept before optimizing\n- Think in terms of trade-offs, not absolutes\n- Document as you go — future you will thank present you\n\nWant me to go deeper on any specific part?",
@@ -58,11 +58,11 @@ $(function () {
   }
 
   /* Format text with basic markdown-ish parsing
-     SECURITY: Escape HTML first to prevent XSS attacks on code/markdown
-     Handles: **bold**, *italic*, `inline code`, ```code blocks```, lists
-     
-     NOTE: This is NOT a full markdown parser. It's minimal by design.
-     If we add more formatting later, consider migrating to marked.js library.
+      SECURITY: Escape HTML first to prevent XSS attacks on code/markdown
+      Handles: **bold**, *italic*, `inline code`, ```code blocks```, lists
+
+      NOTE: This is NOT a full markdown parser. It's minimal by design.
+      If we add more formatting later, consider migrating to marked.js library.
   */
   function formatText(text) {
     // Validate input
@@ -110,12 +110,12 @@ $(function () {
   }
 
   /* addMessage — creates and appends a message bubble to the DOM
-     @param {string} text   — message content (will be formatted)
-     @param {string} sender — 'user' or 'ai'
-     @param {boolean} typewriter — animate AI response letter by letter
-     
-     NOTE: jQuery is used here for DOM manipulation. Consider refactoring to vanilla JS.
-     PERF: Adding many messages rapidly might lag. Consider virtualizing if 100+ messages.
+      @param {string} text   — message content (will be formatted)
+      @param {string} sender — 'user' or 'ai'
+      @param {boolean} typewriter — animate AI response letter by letter
+
+      NOTE: jQuery is used here for DOM manipulation. Consider refactoring to vanilla JS.
+      PERF: Adding many messages rapidly might lag. Consider virtualizing if 100+ messages.
   */
   function addMessage(text, sender, typewriter = false) {
     // Defensive checks
@@ -218,14 +218,14 @@ $(function () {
   }
 
   /* sendMessage — orchestrates the entire send flow
-     1. Validate input (not empty, not while typing)
-     2. Hide welcome screen on first message
-     3. Add user message to DOM + history
-     4. Simulate AI thinking (random 1-2s)
-     5. Pick random response and add with typewriter effect
-     
-     PERF BUG: If user sends multiple messages rapidly, isTyping might not update properly.
-     TODO: Add message queue instead of just setting isTyping flag.
+      1. Validate input (not empty, not while typing)
+      2. Hide welcome screen on first message
+      3. Add user message to DOM + history
+      4. Simulate AI thinking (random 1-2s)
+      5. Pick random response and add with typewriter effect
+
+      PERF BUG: If user sends multiple messages rapidly, isTyping might not update properly.
+      TODO: Add message queue instead of just setting isTyping flag.
   */
   function sendMessage() {
     const $input = $('#messageInput');

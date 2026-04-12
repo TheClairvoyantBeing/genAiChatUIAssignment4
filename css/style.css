@@ -1,13 +1,13 @@
 /* 
-   Design Tokens & CSS Variables
-   Started with hardcoded colors, migrated to --vars for dark/light mode switching.
-   This approach is cleaner than duplicating every selector.
-   Dark theme is default (tests mainly on dark mode).
+    Design Tokens & CSS Variables
+    Started with hardcoded colors, migrated to --vars for dark/light mode switching.
+    This approach is cleaner than duplicating every selector.
+    Dark theme is default (tests mainly on dark mode).
 */
 :root {
   /* Core palette — dark theme
-     Tested: Chrome 120+, Firefox 121+, Safari 17+
-     TODO: Verify contrast ratios on light mode (WCAG AA)
+      Tested: Chrome 120+, Firefox 121+, Safari 17+
+      TODO: Verify contrast ratios on light mode (WCAG AA)
   */
   --bg-primary:       #0d1117;      /* GitHub dark background */
   --bg-secondary:     #161b27;      /* Slightly lighter for depth */
@@ -25,16 +25,16 @@
   --text-heading:     #f0f2f8;
 
   /* Accent colors
-     Teal works well for dark mode. Tested against majority of avatars.
-     Indigo for user messages has slightly better contrast but was less intuitive.
+      Teal works well for dark mode. Tested against majority of avatars.
+      Indigo for user messages has slightly better contrast but was less intuitive.
   */
   --accent:           #5eead4;          /* teal */
   --accent-dim:       rgba(94,234,212,.15);
   --accent-user:      #818cf8;          /* indigo for user bubble */
 
   /* Borders & Shadows
-     Reduced blur values from initial design (was too heavy). 
-     Shadows help differentiate message bubbles in dark mode.
+      Reduced blur values from initial design (was too heavy). 
+      Shadows help differentiate message bubbles in dark mode.
   */
   --border:           rgba(255,255,255,.07);
   --border-focus:     rgba(94,234,212,.45);
@@ -97,8 +97,8 @@ html, body {
 }
 
 /* 
-   Custom scrollbar — webkit only (Firefox doesn't support much customization)
-   Safari sometimes has issues with thin scrollbars. Fallback to default if broken.
+    Custom scrollbar — webkit only (Firefox doesn't support much customization)
+    Safari sometimes has issues with thin scrollbars. Fallback to default if broken.
 */
 ::-webkit-scrollbar {
   width: 5px;
