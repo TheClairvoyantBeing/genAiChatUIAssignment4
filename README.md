@@ -53,7 +53,7 @@ Or with VS Code Live Server:
 ## File Structure
 
 ```
-EvionPremCutinha_ChatUI/
+ChatUI/
 ├── index.html          # Main HTML — structure and layout
 ├── css/
 │   └── style.css       # All styles — variables, components, responsive
