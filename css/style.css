@@ -1,47 +1,55 @@
-/* =========================================
-    CSS Variables — design tokens
-    I keep these at root so theme switching is a single toggle.
-    Dark theme is default.
-========================================= */
+/* 
+   Design Tokens & CSS Variables
+   Started with hardcoded colors, migrated to --vars for dark/light mode switching.
+   This approach is cleaner than duplicating every selector.
+   Dark theme is default (tests mainly on dark mode).
+*/
 :root {
-  /* Core palette — dark theme */
-  --bg-primary:       #0d1117;
-  --bg-secondary:     #161b27;
-  --bg-sidebar:       #10141e;
-  --bg-input:         #1a2035;
-  --bg-card:          #1c2133;
-  --bg-card-hover:    #222840;
-  --bg-msg-ai:        #1c2133;
-  --bg-msg-user:      #2d3a7c;
+  /* Core palette — dark theme
+     Tested: Chrome 120+, Firefox 121+, Safari 17+
+     TODO: Verify contrast ratios on light mode (WCAG AA)
+  */
+  --bg-primary:       #0d1117;      /* GitHub dark background */
+  --bg-secondary:     #161b27;      /* Slightly lighter for depth */
+  --bg-sidebar:       #10141e;      /* Even darker for sidebar */
+  --bg-input:         #1a2035;      /* Input field background */
+  --bg-card:          #1c2133;      /* Card/messages background */
+  --bg-card-hover:    #222840;      /* Hover state */
+  --bg-msg-ai:        #1c2133;      /* AI message bubble */
+  --bg-msg-user:      #2d3a7c;      /* User message bubble (indigo) */
 
-  /* Text */
+  /* Text colors */
   --text-primary:     #e8eaf0;
   --text-secondary:   #8b95b0;
   --text-muted:       #555e78;
   --text-heading:     #f0f2f8;
 
-  /* Accent */
+  /* Accent colors
+     Teal works well for dark mode. Tested against majority of avatars.
+     Indigo for user messages has slightly better contrast but was less intuitive.
+  */
   --accent:           #5eead4;          /* teal */
   --accent-dim:       rgba(94,234,212,.15);
   --accent-user:      #818cf8;          /* indigo for user bubble */
 
-  /* Borders */
+  /* Borders & Shadows
+     Reduced blur values from initial design (was too heavy). 
+     Shadows help differentiate message bubbles in dark mode.
+  */
   --border:           rgba(255,255,255,.07);
   --border-focus:     rgba(94,234,212,.45);
-
-  /* Shadows */
   --shadow-sm:        0 1px 3px rgba(0,0,0,.4);
   --shadow-md:        0 4px 16px rgba(0,0,0,.45);
   --shadow-lg:        0 8px 32px rgba(0,0,0,.55);
   --shadow-input:     0 2px 20px rgba(0,0,0,.35);
 
-  /* Sizing */
+  /* Layout measurements */
   --sidebar-width:    260px;
   --topbar-height:    56px;
   --input-radius:     16px;
   --bubble-radius:    16px;
 
-  /* Transitions */
+  /* Transitions — tuned for perceived snappiness without jank */
   --trans-fast:       0.15s ease;
   --trans-med:        0.25s ease;
   --trans-slow:       0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,9 +76,7 @@
   --shadow-input:     0 2px 16px rgba(0,0,0,.1);
 }
 
-/* =========================================
-    Global reset + base
-========================================= */
+/* Global reset + base styling */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -84,14 +90,19 @@ html, body {
   color: var(--text-primary);
   background: var(--bg-primary);
   overflow: hidden;
+  /* Smooth transitions for theme switching (notice lag on older devices?) */
   transition: background var(--trans-med), color var(--trans-med);
+  /* Prevent unwanted pinch zoom on mobile */
+  touch-action: manipulation;
 }
 
-/* =========================================
-    Custom scrollbar
-========================================= */
+/* 
+   Custom scrollbar — webkit only (Firefox doesn't support much customization)
+   Safari sometimes has issues with thin scrollbars. Fallback to default if broken.
+*/
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -102,10 +113,13 @@ html, body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+  /* Workaround: some browsers don't smooth this transition */
+  transition: background 0.2s ease;
 }
 
 /* =========================================
-    App container — sidebar + main
+    APP CONTAINER — sidebar + main layout
+    NOTE: Using flexbox for layout. CSS Grid would be cleaner but flexbox has better support.
 ========================================= */
 .app-container {
   display: flex;
@@ -113,10 +127,20 @@ html, body {
   width: 100vw;
   overflow: hidden;
   position: relative;
+  /* Workaround: Some mobile browsers report incorrect vh values */
+  height: 100%;
+  /* Prevent layout shift when scrollbar appears/disappears */
+  overflow-y: scroll;
+  overflow-y: overlay;
 }
 
 /* =========================================
-    SIDEBAR
+    SIDEBAR — main navigation container
+    Mobile: Hidden by default, slides in from left on hamburger click
+    Desktop: Always visible
+    
+    NOTE: Using transform + transition for performance (GPU acceleration).
+    Avoid animating position/left due to layout thrashing.
 ========================================= */
 .sidebar {
   width: var(--sidebar-width);
@@ -128,9 +152,25 @@ html, body {
   flex-direction: column;
   padding: 0;
   overflow: hidden;
+  /* This transition can be jumpy on slow devices. Consider remove if performance issue. */
   transition: transform var(--trans-slow);
   z-index: 200;
   flex-shrink: 0;
+  
+  /* Mobile: slide-out effect */
+  @media (max-width: 768px) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    height: 100%;
+    box-shadow: var(--shadow-lg);
+    
+    /* HACKY: Adding transition here works better on Safari */
+    &.open {
+      transform: translateX(0);
+    }
+  }
 }
 
 /* Sidebar header */

@@ -22,19 +22,21 @@
   <!-- App wrapper -->
   <div class="app-container" id="appContainer">
 
-    <!-- =========================================
-          SIDEBAR — chat history + nav
-    ========================================= -->
-    <aside class="sidebar" id="sidebar">
+    <!-- SIDEBAR — chat history + nav
+         NOTE: Mobile responsiveness is a bit janky on iOS Safari due to viewport height bug
+         See: https://bugs.webkit.org/show_bug.cgi?id=141832
+    -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Chat history and settings">
 
       <!-- Sidebar header -->
       <div class="sidebar-header">
         <div class="logo-mark">
-          <i class="fa-solid fa-brain"></i>
+          <i class="fa-solid fa-brain" aria-hidden="true"></i>
           <span>NeuralChat</span>
         </div>
-        <button class="btn-icon" id="closeSidebar" title="Close sidebar">
-          <i class="fa-solid fa-xmark"></i>
+        <!-- FIXME: close button sometimes doesn't register on first tap (touch event issue?) -->
+        <button class="btn-icon" id="closeSidebar" title="Close sidebar" aria-label="Close sidebar menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -44,11 +46,12 @@
         <span>New Chat</span>
       </button>
 
-      <!-- Chat history -->
+      <!-- Chat history - TODO: implement actual persistence with localStorage -->
       <div class="sidebar-section-label">Recents</div>
-      <div class="chat-history" id="chatHistory">
-        <div class="history-item active">
-          <i class="fa-regular fa-comment"></i>
+      <div class="chat-history" id="chatHistory" role="list" aria-label="Recent conversations">
+        <!-- Each history item should get unique IDs for tracking (refactor later) -->
+        <div class="history-item active" role="listitem" data-chat-id="current">
+          <i class="fa-regular fa-comment" aria-hidden="true"></i>
           <span>New conversation</span>
         </div>
         <div class="history-item">
