@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuralChat — AI Assistant</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Google Fonts — Sora (headings) + DM Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- App wrapper -->
+  <div class="app-container" id="appContainer">
+
+    <!-- =========================================
+          SIDEBAR — chat history + nav
+    ========================================= -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Sidebar header -->
+      <div class="sidebar-header">
+        <div class="logo-mark">
+          <i class="fa-solid fa-brain"></i>
+          <span>NeuralChat</span>
+        </div>
+        <button class="btn-icon" id="closeSidebar" title="Close sidebar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- New chat button -->
+      <button class="new-chat-btn" id="newChatBtn">
+        <i class="fa-solid fa-plus"></i>
+        <span>New Chat</span>
+      </button>
+
+      <!-- Chat history -->
+      <div class="sidebar-section-label">Recents</div>
+      <div class="chat-history" id="chatHistory">
+        <div class="history-item active">
+          <i class="fa-regular fa-comment"></i>
+          <span>New conversation</span>
+        </div>
+        <div class="history-item">
+          <i class="fa-regular fa-comment"></i>
+          <span>What is transformer arch...</span>
+        </div>
+        <div class="history-item">
+          <i class="fa-regular fa-comment"></i>
+          <span>Python async vs threads</span>
+        </div>
+        <div class="history-item">
+          <i class="fa-regular fa-comment"></i>
+          <span>Docker Compose quickstart</span>
+        </div>
+        <div class="history-item">
+          <i class="fa-regular fa-comment"></i>
+          <span>Resume review for Honeywell</span>
+        </div>
+      </div>
+
+      <!-- Spacer -->
+      <div class="sidebar-spacer"></div>
+
+      <!-- Sidebar actions -->
+      <div class="sidebar-actions">
+        <button class="sidebar-action-btn" id="exportChatBtn" title="Export chat">
+          <i class="fa-solid fa-download"></i>
+          <span>Export Chat</span>
+        </button>
+        <button class="sidebar-action-btn" id="darkModeToggle" title="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+          <span id="themeLabel">Light Mode</span>
+        </button>
+      </div>
+
+      <!-- User profile -->
+      <div class="user-profile">
+        <div class="user-avatar-small">E</div>
+        <div class="user-info">
+          <div class="user-name">Evion Cutinha</div>
+          <div class="user-plan">Free Plan</div>
+        </div>
+        <button class="btn-icon" title="Settings">
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- =========================================
+          MAIN CONTENT — chat area
+    ========================================= -->
+    <main class="main-content">
+
+      <!-- Top nav bar -->
+      <header class="top-bar">
+        <!-- Hamburger (mobile only) -->
+        <button class="btn-icon hamburger" id="hamburgerBtn" title="Open sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Model label -->
+        <div class="model-badge">
+          <span class="model-dot"></span>
+          NeuralChat 1.0
+        </div>
+
+        <!-- Right actions -->
+        <div class="top-bar-right">
+          <button class="btn-icon" title="Share">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- =========================================
+            MESSAGES AREA
+      ========================================= -->
+      <section class="messages-wrapper" id="messagesWrapper">
+
+        <!-- Welcome screen — hidden after first message -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-icon">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h1 class="welcome-title">What can I help with?</h1>
+          <p class="welcome-subtitle">Start a conversation or pick a suggestion below.</p>
+
+          <!-- Suggestion cards — 4 in a grid -->
+          <div class="suggestion-grid" id="suggestionGrid">
+
+            <div class="suggestion-card" data-prompt="Explain how neural networks learn using backpropagation.">
+              <div class="card-icon"><i class="fa-solid fa-network-wired"></i></div>
+              <div class="card-body-text">
+                <div class="card-title">Explain neural nets</div>
+                <div class="card-desc">How backpropagation actually works</div>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="Write a Python script to scrape job listings from a website using BeautifulSoup.">
+              <div class="card-icon"><i class="fa-brands fa-python"></i></div>
+              <div class="card-body-text">
+                <div class="card-title">Python web scraper</div>
+                <div class="card-desc">BeautifulSoup job listings script</div>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="Review my resume for a Software Engineer role at Honeywell and suggest improvements.">
+              <div class="card-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="card-body-text">
+                <div class="card-title">Resume review</div>
+                <div class="card-desc">Optimize for a DevOps/SWE role</div>
+              </div>
+            </div>
+
+            <div class="suggestion-card" data-prompt="What are the key differences between SQL and NoSQL databases? Give me a comparison with use cases.">
+              <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+              <div class="card-body-text">
+                <div class="card-title">SQL vs NoSQL</div>
+                <div class="card-desc">Comparison with real use cases</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Messages container — messages injected here by JS -->
+        <div class="messages-container" id="messagesContainer"></div>
+
+        <!-- Typing indicator -->
+        <div class="typing-indicator" id="typingIndicator" style="display:none;">
+          <div class="message ai-message typing-msg">
+            <div class="msg-avatar ai-avatar">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <div class="msg-body">
+              <div class="msg-header">
+                <span class="msg-name">NeuralChat</span>
+              </div>
+              <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =========================================
+            INPUT AREA
+      ========================================= -->
+      <div class="input-wrapper">
+        <div class="input-container" id="inputContainer">
+
+          <!-- Attach button -->
+          <button class="input-btn attach-btn" id="attachBtn" title="Attach file">
+            <i class="fa-solid fa-paperclip"></i>
+          </button>
+
+          <!-- Auto-resize textarea -->
+          <textarea
+            id="messageInput"
+            class="message-input"
+            placeholder="Message NeuralChat..."
+            rows="1"
+            maxlength="4000"
+          ></textarea>
+
+          <!-- Send button -->
+          <button class="input-btn send-btn" id="sendBtn" title="Send message" disabled>
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+
+        </div>
+
+        <!-- Footer text -->
+        <p class="input-footer">
+          NeuralChat can make mistakes. Verify important info.
+        </p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="js/chat.js"></script>
+
+</body>
+</html>
