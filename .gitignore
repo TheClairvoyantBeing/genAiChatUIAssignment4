@@ -7,3 +7,18 @@ __pycache__/
 node_modules/
 .vscode/
 .idea/
+
+# Standard repository hygiene
+*.py[cod]
+dist/
+build/
+out/
+target/
+coverage/
+htmlcov/
+.venv/
+venv/
+env/
+.env
+.env.*
+reviews.md

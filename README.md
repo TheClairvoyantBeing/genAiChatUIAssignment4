@@ -85,3 +85,14 @@ Light mode keeps the sidebar dark intentionally — feels more professional.
 ---
 
 *CampusPe Gen AI Internship | April 2026*
+
+## Repository Standardization
+
+This repository was standardized on 2026-09-05 under the ownership of [TheClairvoyantBeing](https://github.com/TheClairvoyantBeing).
+
+### Changes applied
+
+- Added a consistent `.gitignore` hygiene section covering IDE metadata (`.idea/`, `.vscode/`), Python caches, Node dependencies, build output, virtual environments, coverage output, `.env` files, and `reviews.md`.
+- Ensured `requirements.txt` exists. Existing dependency declarations were preserved; repositories without detected Python dependencies contain a clearly marked placeholder.
+- Standardized the repository license to the GNU Affero General Public License v3 (AGPLv3), with TheClairvoyantBeing as the copyright holder. AGPLv3 requires corresponding source to remain available when covered software is distributed or provided as a network service.
+- This section records the repository-level maintenance changes; existing project-specific setup, usage, architecture, and development documentation remains above.
