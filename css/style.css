@@ -980,3 +980,26 @@ html, body {
     max-width: 820px;
   }
 }
+
+/* Accessibility: WCAG AA prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .typing-dots span {
+    animation: none !important;
+  }
+}
+
+/* Mobile viewport fix for modern mobile browsers */
+@supports (height: 100dvh) {
+  .app-container {
+    height: 100dvh;
+  }
+}
+

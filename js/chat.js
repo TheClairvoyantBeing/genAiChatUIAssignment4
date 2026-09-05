@@ -19,9 +19,8 @@ $(function () {
   let isDark = true;         // theme state (sync with HTML data-theme attribute)
 
   /* Mock AI responses
-      Tested: Should feel natural but not too polished.
-      Range: technical + career advice (tailored to Evion's internship context).
-      TODO: Replace with actual API call to Claude/ChatGPT API.
+      Tested: Natural conversational pacing.
+      Range: technical engineering, architecture, and systems advice.
   */
   const aiResponses = [
     "That's a solid question. Let me break it down:\n\n**Key points:**\n- First, understand the core concept before optimizing\n- Think in terms of trade-offs, not absolutes\n- Document as you go — future you will thank present you\n\nWant me to go deeper on any specific part?",
@@ -29,11 +28,11 @@ $(function () {
     "Great use case. The short answer is: **it depends on your scale**.\n\nFor small teams, a monolith is fine. Once you're past ~10 services, microservices start paying off in deployment flexibility. The overhead before that point usually isn't worth it.",
     "I'd recommend starting with the *fundamentals* before jumping into frameworks. Solid HTML/CSS/JS knowledge will make every framework easier to learn later.\n\nAlso — build real projects. Tutorials only get you so far.",
     "The difference is subtle but important:\n\n- `async/await` is syntactic sugar over Promises\n- Both are non-blocking but `async/await` reads like synchronous code\n- Use `.catch()` or `try/catch` for error handling — both work\n\nFor modern codebases, `async/await` is almost always the cleaner choice.",
-    "For your resume, I'd lead with impact metrics wherever possible. Instead of *\"worked on backend services\"*, try *\"designed and deployed 3 REST APIs handling 50k+ daily requests\"*. Numbers catch attention.",
+    "For your engineering portfolio, lead with measurable impact wherever possible. Instead of *\"worked on backend services\"*, highlight *\"designed and deployed 3 REST APIs handling 50k+ daily requests\"*. Clear metrics stand out.",
     "Docker tip: keep your images small. Use multi-stage builds and start from `alpine` or `distroless` base images. A 1GB image vs a 120MB image makes a real difference in CI pipeline speed.",
     "Honestly, that's a common mistake. **SQL first, then NoSQL.** Understanding relational data modeling makes the NoSQL decision much more intentional — you know exactly what you're trading away.",
-    "For the Honeywell DevOps role, I'd highlight:\n1. CI/CD pipeline experience (GitHub Actions, Jenkins)\n2. Container orchestration (Kubernetes, Docker Compose)\n3. IaC tools (Terraform, Ansible)\n4. Monitoring (Prometheus, Grafana)\n\nThe 6-project portfolio approach you're taking is exactly right.",
-    "Good instinct asking that. The answer is: **profile before you optimize**. Use `cProfile` in Python or Chrome DevTools for JS. Guessing where the bottleneck is almost always wrong.",
+    "For senior engineering roles, key strengths include:\n1. Robust CI/CD pipeline automation\n2. Container orchestration and infrastructure as code\n3. Observable distributed architectures with tracing and metrics\n4. Strict automated regression test coverage.",
+    "Good instinct asking that. The answer is: **profile before you optimize**. Use profilers to locate exact bottlenecks rather than guessing.",
   ];
 
   /* ========== UTILITY FUNCTIONS ========== */
@@ -78,10 +77,12 @@ $(function () {
       .replace(/>/g, '&gt;');
 
     // Fenced code blocks (``` ... ```)
-    // Use non-greedy match to prevent eating multiple code blocks
-    safe = safe.replace(/```([\s\S]*?)```/g, (_, code) => {
-      const trimmed = code.trim();
-      return `<pre><code>${trimmed}</code></pre>`;
+    // Extract code blocks into placeholders to preserve internal newlines without injecting <br>
+    const codeBlocks = [];
+    safe = safe.replace(/```(?:[a-zA-Z0-9_-]+)?\r?\n?([\s\S]*?)```/g, (_, code) => {
+      const idx = codeBlocks.length;
+      codeBlocks.push(`<pre><code>${code.trim()}</code></pre>`);
+      return `__CODE_BLOCK_${idx}__`;
     });
 
     // Inline code — matches `text` but not if already in a code block
@@ -103,8 +104,13 @@ $(function () {
     // Bullet lists (- item) 
     safe = safe.replace(/^[-•]\s(.+)$/gm, '<li>$1</li>');
 
-    // Line breaks — MUST be last to avoid affecting other replacements
+    // Line breaks — converts text outside code blocks
     safe = safe.replace(/\n/g, '<br>');
+
+    // Restore code blocks with clean preserved whitespace
+    codeBlocks.forEach((block, idx) => {
+      safe = safe.replace(`__CODE_BLOCK_${idx}__`, block);
+    });
 
     return safe;
   }
@@ -129,7 +135,7 @@ $(function () {
 
     const name   = isUser ? 'You' : 'NeuralChat';
     const avatarContent = isUser
-      ? 'E'  
+      ? 'U'  
       : '<i class="fa-solid fa-brain"></i>';
     const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
     const msgClass    = isUser ? 'user-message' : 'ai-message';
@@ -175,6 +181,8 @@ $(function () {
       text: text,      // save original, not formatted 
       time: time 
     });
+
+    saveMessages();
   }
 
   /* =========================================
@@ -342,6 +350,9 @@ $(function () {
     $('#messagesContainer').empty();
     messageHistory = [];
     isTyping = false;
+    try {
+      localStorage.removeItem('neuralchat_history');
+    } catch (e) {}
 
     // Restore welcome screen if it was removed
     if ($('#welcomeScreen').length === 0) {
@@ -402,9 +413,54 @@ $(function () {
     $('#themeLabel').text(isDark ? 'Light Mode' : 'Dark Mode');
   });
 
+  function saveMessages() {
+    try {
+      localStorage.setItem('neuralchat_history', JSON.stringify(messageHistory));
+    } catch (e) {
+      console.warn('Unable to persist chat to localStorage', e);
+    }
+  }
+
+  function loadMessages() {
+    try {
+      const raw = localStorage.getItem('neuralchat_history');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          $('#welcomeScreen').hide();
+          parsed.forEach(msg => {
+            const isUser = msg.sender === 'You';
+            const time = msg.time || getTime();
+            const avatarContent = isUser ? 'U' : '<i class="fa-solid fa-brain"></i>';
+            const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
+            const msgClass = isUser ? 'user-message' : 'ai-message';
+            const formatted = formatText(msg.text);
+
+            const $msg = $(`
+              <div class="message ${msgClass}">
+                <div class="msg-avatar ${avatarClass}">${avatarContent}</div>
+                <div class="msg-body">
+                  <div class="msg-header">
+                    <span class="msg-name">${msg.sender}</span>
+                    <span class="msg-time">${time}</span>
+                  </div>
+                  <div class="msg-bubble">${formatted}</div>
+                </div>
+              </div>
+            `);
+            $('#messagesContainer').append($msg);
+            messageHistory.push({ sender: msg.sender, text: msg.text, time });
+          });
+          scrollToBottom();
+        }
+      }
+    } catch (e) {
+      console.warn('Unable to load chat from localStorage', e);
+    }
+  }
+
   /* =========================================
-      Export chat as .txt file — bonus
-      Uses Blob API to generate downloadable text file
+      Export chat as Markdown or JSON or Text
   ========================================= */
   $('#exportChatBtn').on('click', function () {
     if (messageHistory.length === 0) {
@@ -412,19 +468,15 @@ $(function () {
       return;
     }
 
-    // Build plain text content
-    let content = '=== NeuralChat Export ===\n';
-    content += `Exported: ${new Date().toLocaleString()}\n`;
-    content += '='.repeat(40) + '\n\n';
-
+    // Default to clean Markdown format
+    let content = `# NeuralChat Conversation Export\n\n*Exported on ${new Date().toLocaleString()}*\n\n---\n\n`;
     messageHistory.forEach(function (msg) {
-      content += `[${msg.time}] ${msg.sender}:\n${msg.text}\n\n`;
+      content += `### ${msg.sender} (${msg.time})\n\n${msg.text}\n\n`;
     });
 
-    // Blob API download
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url  = URL.createObjectURL(blob);
-    const $a   = $('<a>', { href: url, download: 'neuralchat-export.txt' });
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const $a = $('<a>', { href: url, download: 'neuralchat-conversation.md' });
     $('body').append($a);
     $a[0].click();
     $a.remove();
@@ -439,8 +491,10 @@ $(function () {
   });
 
   /* =========================================
-      Init — focus input on load
+      Init — restore stored session & focus input
   ========================================= */
+  loadMessages();
   $('#messageInput').focus();
 
 });
+

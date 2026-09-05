@@ -2,22 +2,33 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>NeuralChat — AI Assistant</title>
+  <meta name="description" content="NeuralChat is a responsive, modern conversational AI chat interface with real-time typewriter effects, markdown rendering, export options, and dark/light themes." />
+  <meta name="theme-color" content="#0d1117" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap 5 with SRI -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Google Fonts — Sora (headings) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
 
   <!-- Custom styles -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <noscript>
+    <div style="padding: 20px; background: #0d1117; color: #5eead4; text-align: center; font-family: sans-serif;">
+      NeuralChat requires JavaScript to operate. Please enable JavaScript in your browser settings.
+    </div>
+  </noscript>
 
   <!-- App wrapper -->
   <div class="app-container" id="appContainer">
@@ -88,10 +99,10 @@
 
       <!-- User profile -->
       <div class="user-profile">
-        <div class="user-avatar-small">E</div>
+        <div class="user-avatar-small">TCB</div>
         <div class="user-info">
-          <div class="user-name">Evion Cutinha</div>
-          <div class="user-plan">Free Plan</div>
+          <div class="user-name">TheClairvoyantBeing</div>
+          <div class="user-plan">Pro Plan</div>
         </div>
         <button class="btn-icon" title="Settings">
           <i class="fa-solid fa-ellipsis"></i>
